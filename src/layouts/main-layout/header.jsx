@@ -4,7 +4,7 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { AppBar as MuiAppBar, styled } from '@mui/material';
 import Toolbar from '@mui/material/Toolbar';
 import MenuIcon from '@mui/icons-material/Menu';
-
+import Typography from '@mui/material/Typography';
 // hooks
 //
 import { HEADER, NAV } from '../config-layout';
@@ -70,6 +70,10 @@ export default function Header({ onToggleNav, open }) {
             <MenuIcon color="primary" sx={{ fontSize: ICON_SIZE }} />
           )}
         </IconButton>
+        <Typography variant="h6" sx={{ color: "black" }}>
+  Quản lý tin nhắn chờ xử lý
+</Typography>
+
       </Stack>
     </>
   );
