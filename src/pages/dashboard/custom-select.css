@@ -1,0 +1,83 @@
+/* Đảm bảo ô nhập không thay đổi kích thước khi chọn nhiều */
+.custom-select-container {
+    width: 100%;
+    position: relative;
+  }
+  
+  /* Giữ input không bị thay đổi kích thước */
+  .custom-select-container .react-select__control {
+    min-height: 40px;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* Ẩn bớt phần bên trái nếu chọn quá nhiều */
+  .custom-select-container .react-select__value-container {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* Điều chỉnh danh sách tùy chọn */
+  .custom-select-container .react-select__option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  
+  /* Checkbox nằm bên phải */
+  .custom-select-container .react-select__option input[type="checkbox"] {
+    margin-left: auto;
+    width: 16px;
+    height: 16px;
+    accent-color: #006600;
+  }
+
+  /*
+Điều chỉnh danh sách tùy chọn 
+.custom-select .react-select__option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  Khi hover 
+  .custom-select .react-select__option:hover {
+    background-color: #f0f0f0 !important;
+  }
+  
+  .custom-select .react-select__option input[type="checkbox"] {
+    margin-left: auto;
+    width: 16px;
+    height: 16px;
+    accent-color: #006600;
+  }
+   Không làm thay đổi kích thước ô nhập
+  .custom-select .react-select__control {
+    min-height: 40px;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow: hidden;
+  }
+  Hiển thị các mục đã chọn bên trong nhưng không thay đổi chiều cao
+  .custom-select .react-select__multi-value {
+    background: #e6f7ff;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    margin: 2px;
+  }
+  Giữ danh sách hiển thị sau khi chọn 
+  .custom-select .react-select__menu {
+    z-index: 9999;
+    position: absolute !important;
+  }
+  */

@@ -2,7 +2,11 @@
 section {
   padding: 24px;
   background-color: #f9fafb;
+  margin-left: -25px;
+  overflow-x: hidden;
 }
+
+
 
 /* Tiêu đề */
 h1 {
@@ -11,7 +15,7 @@ h1 {
   margin: 0 0 20px 10px;
 }
 
-/* Nút bấm */
+/* button */
 button {
   padding: 8px 12px;
   border-radius: 8px;
@@ -25,12 +29,16 @@ button {
   border: none;
   color: white;
 }
+
 /*3button cn*/
 .button-group {
   display: flex;
   gap: 8px;
   align-items: center;
-  justify-content: right;
+  margin-left: auto; 
+  justify-content: flex-end;
+  width: 100%;
+  margin-bottom: 10px;
 }
 
 button:hover {
@@ -38,37 +46,25 @@ button:hover {
   background-color: #bcefd5;
   color: #006600;
 }
-.gird {
-  width: 100%;
-}
-
-/* Ô chọn (Dropdown) */
-.custom-select .react-select__menu {
-  background-color: white !important;
-  border: 1px solid #ccc;
-  z-index: 1000;
-}
-
-.custom-select .react-select__option {
-  background-color: white !important;
-  color: black !important;
-}
-
-.custom-select .react-select__option:hover {
-  background-color: #f0f0f0 !important;
+.gird-container {
+  max-width: 90%;
 }
 
 /* Input fields */
 input, select {
   border: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 5px;
+  padding: 12px;
+  border-radius: 2px;
   font-size: 14px;
   width: 100%;
   background-color: white;
   color: black;
 }
-
+.input-wrapper {
+  padding: 5px;
+  width: 450px;
+ 
+}
 /* Form input group */
 .form-group {
   display: flex;
@@ -130,18 +126,222 @@ tr:hover {
   color: white;
 }
 
-/*from1from1*/
+
+/* Form container */
 .form-container {
   width: 100vw;
-  max-width: 100%; 
+  max-width: 93%;
   background-color: rgb(255, 255, 255);
   padding: 16px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
   gap: 10px;
   align-items: center;
   justify-content: flex-start;
   margin-bottom: 20px;
-  margin-left: -55px;
+  box-sizing: border-box;
+  overflow: visible !important;
+}
+
+.grid-rows-2 > div {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+/* Dropdown menu fix */
+.relative.w-full .absolute {
+  background-color: white !important;
+  z-index: 9999 !important;
+  border: 1px solid #ccc !important;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  width: 345px !important;
+}
+
+.relative.w-full .absolute div,
+.relative.w-full .absolute li { /* Áp dụng cho từng dòng */
+  padding: 8px;
+  cursor: pointer;
+}
+
+.relative.w-full .absolute div:hover,
+.relative.w-full .absolute li:hover {
+  background-color: #f0f0f0 !important; /* Đổi màu nền từng dòng khi hover */
+}
+
+/*date*/
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker__input-container input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+
+.react-datepicker {
+  font-size: 14px;
+}
+
+.react-datepicker__header {
+  background-color: #f0f0f0;
+}
+/*color radius input
+input:focus, select:focus, .react-datepicker__input-container input:focus {
+  border: 2px solid rgb(69, 94, 253) !important;
+  outline: none;
+}
+  */
+
+/* Xóa viền xanh khi chọn nhiều giá trị */
+.custom-select__multi-value {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Loại bỏ viền xanh của từng giá trị */
+.custom-select__multi-value__label {
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* Loại bỏ focus trên input */
+.custom-select__input-container {
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* Chỉnh lại focus của dropdown tổng */
+.custom-select:focus, 
+.custom-select:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.datepicker-container {
+  display: flex;
+  align-items: center;
+  gap: 2px; /* Khoảng cách giữa các phần tử */
+  border: 1px solid rgb(202, 202, 202); /* Tạo viền đen */
+  padding: 4px; /* Thêm khoảng cách bên trong để viền không sát nội dung */
+  border-radius: 2px; /* Bo góc nhẹ */
+  width: 200%;
+  height: 41px;
+  margin-top: 5px;
+}
+
+
+.datepicker {
+  width: 100% !important; 
+  padding: 5px;
+  border: none !important; /* Xóa viền */
+  outline: none !important; /* Xóa viền khi focus */
+  text-align: left;
+}
+
+/* Container chính để đảm bảo chia đều */
+.filter-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 cột bằng nhau */
+  gap: 14px;
+  align-items: center; /* Căn giữa theo chiều dọc */
+}
+
+/* Wrapper cho từng input/select */
+.filter-item {
+  width: 94%;
+  padding: 10px 0px 20px ;
+  margin-left: 5px;
+}
+
+/* Định dạng cho Select */
+.custom-select {
+  width: 100% !important;
+}
+
+/* Định dạng cho Input */
+.custom-input {
+  width: 100%;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+}
+
+
+
+/* Tổng thể phần nội dung */
+.text-lg {
+padding: auto;
+margin-top: -10px;
+}
+.content-wrapper {
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 93%;
+}
+
+/* Chia bảng thành 2 cột chiếm 94% */
+.tables-wrapper {
+  display: flex;
+  gap: 16px;
+  width: 94%;
+  margin: 0 auto;
+  height: 300px;
+}
+
+/* Mỗi bảng chiếm 50% (chia đều) */
+.table-container {
+  flex: 1;
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background-color: #fafafa;
+  padding: 8px;
+}
+
+/* Header bảng */
+.table-container thead {
+  background-color: #d1fae5;
+}
+
+/* Dòng trong bảng */
+.table-container tbody tr {
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Hover */
+.table-container tbody tr:hover {
+  background-color: #f3f4f6;
+  cursor: pointer;
+}
+
+/* Ô bảng */
+.table-container td, 
+.table-container th {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Phần chi tiết */
+.details-section {
+  margin-top: 16px;
+  padding: 16px;
+  background-color: #f9fafb;
+  border: 1px solid #ddd;
+  border-radius: 8px;
 }
