@@ -8,6 +8,7 @@ import { Search, RefreshCcw } from "lucide-react";
 import Select, { components } from "react-select";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import DetailTable from "@/components/ui/DetailTable";
 import "./dashboard.css";
 
 
@@ -19,6 +20,7 @@ export default function DashBoard() {
   const [endDate, setEndDate] = useState(null);
   const [position, setPosition] = useState(null);
   const [workplace, setWorkplace] = useState(null);
+  const [showTable, setShowTable] = useState(false);
 
 
   const CustomOption = (props) => {
@@ -161,7 +163,12 @@ export default function DashBoard() {
       </div>
     );
   };
-
+  const employees = [
+    { id: 1, name: "Nguyễn Thị Luyện", department: "COSMETICS", location: "176 Phan Đăng Lưu", count: 27 },
+    { id: 2, name: "Mai Yến Nhi", department: "COSMETICS", location: "447 Phan Văn Trị", count: 22 },
+    { id: 3, name: "BOD Test 1", department: "BOD", location: "", count: 15 },
+    { id: 4, name: "Nguyễn Văn Tính", department: "COSMETICS", location: "555 3 tháng 2", count: 10 },
+];
   return (
     <section className="p-6 text-white">
       <div className="form-container w-full h-full p-4">
@@ -182,7 +189,7 @@ export default function DashBoard() {
   <div className="grid grid-cols-4 gap-3">
     <div className="input-wrapper"><Input placeholder="Người nhận" className="w-full" /></div>
     <div className="input-wrapper"><Input placeholder="Người gửi" className="w-full" /></div>
-    <div className="datepicker-container">
+    <div className="datepicker-Day">
   <DatePicker
     selected={startDate}
     onChange={(date) => setStartDate(date)}
@@ -254,13 +261,12 @@ export default function DashBoard() {
       <Card>
       <CardContent>
   <div className="content-wrapper">
-    <h3 className="text-lg font-bold mb-4">Số lượng chờ xử lý</h3>
+    <h3 className="text-lg font-bold mb-4">Số lượng chờ xử lý theo bộ phận/nghiệp vụ</h3>
 
     {/* Chia bảng thành 2 cột, tổng cộng chiếm 94% chiều rộng */}
     <div className="tables-wrapper">
       {/* Bảng bộ phận */}
       <div className="table-container">
-        <h4 className="text-md font-semibold mb-2">Theo bộ phận</h4>
         <Table>
           <TableHead>
             <TableRow className="bg-green-100">
@@ -283,9 +289,7 @@ export default function DashBoard() {
         </Table>
       </div>
 
-      {/* Bảng nghiệp vụ */}
       <div className="table-container">
-        <h4 className="text-md font-semibold mb-2">Theo nghiệp vụ</h4>
         <Table>
           <TableHead>
             <TableRow className="bg-green-100">
@@ -307,6 +311,29 @@ export default function DashBoard() {
           </TableBody>
         </Table>
       </div>
+      <div className="table-container">
+  <Table>
+    <TableHead>
+      <TableRow className="bg-green-100">
+        <TableCell>NV có nhiều tin nhắn CXL nhất</TableCell>
+        <TableCell>Số lượng</TableCell>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {employees.map((employee) => (
+        <TableRow
+          key={employee.id}
+          className="cursor-pointer hover:bg-gray-100"
+          onClick={() => setSelectedRow(selectedRow === employee.id ? null : employee.id)}
+        >
+          <TableCell>{employee.name} - {employee.department} - {employee.location}</TableCell>
+          <TableCell>{employee.count}</TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+  </Table>
+</div>
+
     </div>
 
     {/* Hiển thị chi tiết nhân viên nếu chọn */}
@@ -337,12 +364,11 @@ export default function DashBoard() {
       </div>
     )}
 
-    <Button variant="outlined">Xem chi tiết</Button>
   </div>
 </CardContent>
-
       </Card>
-
+      <DetailTable />
     </section>
+    
   );
 }

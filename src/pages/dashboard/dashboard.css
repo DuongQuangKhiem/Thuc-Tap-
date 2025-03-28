@@ -65,6 +65,12 @@ input, select {
   width: 450px;
  
 }
+.input-wrapper input:focus {
+  border-color: #798ffc !important;
+  box-shadow: 0 0 0 1px #798ffc;
+  outline: none;
+}
+
 /* Form input group */
 .form-group {
   display: flex;
@@ -241,6 +247,22 @@ input:focus, select:focus, .react-datepicker__input-container input:focus {
   height: 41px;
   margin-top: 5px;
 }
+.datepicker-Day {
+  display: flex;
+  align-items: center;
+  gap: 2px; /* Khoảng cách giữa các phần tử */
+  border: 1px solid rgb(202, 202, 202); /* Tạo viền đen */
+  padding: 4px; /* Thêm khoảng cách bên trong để viền không sát nội dung */
+  border-radius: 2px; /* Bo góc nhẹ */
+  width: 200%;
+  height: 41px;
+  margin-top: 5px;
+}
+.datepicker-Day:focus-within {
+  border-color: #798ffc !important;
+  box-shadow: 0 0 0 1px #798ffc;
+  outline: none;
+}
 
 
 .datepicker {
@@ -292,14 +314,15 @@ margin-top: -10px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 93%;
+  margin-bottom: 20px;
 }
 
 /* Chia bảng thành 2 cột chiếm 94% */
 .tables-wrapper {
   display: flex;
   gap: 16px;
-  width: 94%;
-  margin: 0 auto;
+  width: 100%;
+  margin: -15px auto 20px;
   height: 300px;
 }
 
@@ -307,12 +330,13 @@ margin-top: -10px;
 .table-container {
   flex: 1;
   overflow-x: auto;
-  border-radius: 8px;
+  border-radius: 2px;
   border: 1px solid #ddd;
   background-color: #fafafa;
   padding: 8px;
   overflow: auto;
   scrollbar-width: none; /* Firefox */
+  font-size: 13px;
 }
 
 .table-container::-webkit-scrollbar {
@@ -336,8 +360,7 @@ margin-top: -10px;
 }
 
 /* Ô bảng */
-.table-container td, 
-.table-container th {
+.table-container td, .table-container th {
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;
@@ -350,4 +373,14 @@ margin-top: -10px;
   background-color: #f9fafb;
   border: 1px solid #ddd;
   border-radius: 8px;
+}
+.button-container {
+  display: flex;
+  text-align: center !important ; /* Căn giữa */
+  justify-content: center !important;
+  margin-bottom: 16px; /* Khoảng cách với phần dưới */
+}
+.hide-button {
+  text-align: center !important ; /* Căn giữa */
+  margin-top: 12px; /* Khoảng cách với phần dưới */
 }
