@@ -4,10 +4,12 @@ section {
   background-color: #f9fafb;
   margin-left: -25px;
   overflow-x: hidden;
+  min-width: 1000px; 
 }
-
-
-
+html, body {
+  width: 100vw;
+  overflow-x: hidden; 
+}
 /* Tiêu đề */
 h1 {
   font-size: 20px;
@@ -16,7 +18,7 @@ h1 {
 }
 
 /* button */
-button {
+ .btn-search,.btn-excel,.btn-ref{
   padding: 8px 12px;
   border-radius: 8px;
   font-size: 14px;
@@ -29,7 +31,11 @@ button {
   border: none;
   color: white;
 }
-
+.btn:hover {
+  opacity: 0.9;
+  background-color: #bcefd5;
+  color: #006600;
+}
 /*3button cn*/
 .button-group {
   display: flex;
@@ -40,12 +46,25 @@ button {
   width: 100%;
   margin-bottom: 10px;
 }
-
-button:hover {
-  opacity: 0.9;
-  background-color: #bcefd5;
+.btn-xct{
+  padding: 8px 12px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  background-color:#bcefd5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
   color: #006600;
 }
+.btn-xct:hover {
+  opacity: 0.9;
+  background-color: #006600; 
+  color:white;
+}
+
 .gird-container {
   max-width: 90%;
 }
@@ -63,7 +82,10 @@ input, select {
 .input-wrapper {
   padding: 5px;
   width: 450px;
- 
+}
+.input-wrapper input {
+  height: 38px; /* Điều chỉnh chiều cao */
+  font-size: 15px; /* Điều chỉnh kích thước chữ */
 }
 .input-wrapper input:focus {
   border-color: #798ffc !important;
@@ -85,29 +107,6 @@ input, select {
   min-width: 150px;
 }
 
-/* Bảng dữ liệu */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-  background-color: white;
-}
-
-th, td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-th {
-  background-color: #e0f2e9;
-  font-weight: bold;
-}
-
-/* Hover row */
-tr:hover {
-  background-color: #f5f5f5;
-}
 
 /* Tổng số */
 .total {
@@ -154,6 +153,7 @@ tr:hover {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
+ 
 }
 
 /* Dropdown menu fix */
@@ -168,14 +168,14 @@ tr:hover {
 }
 
 .relative.w-full .absolute div,
-.relative.w-full .absolute li { /* Áp dụng cho từng dòng */
+.relative.w-full .absolute li { 
   padding: 8px;
   cursor: pointer;
 }
 
 .relative.w-full .absolute div:hover,
 .relative.w-full .absolute li:hover {
-  background-color: #f0f0f0 !important; /* Đổi màu nền từng dòng khi hover */
+  background-color: #f0f0f0 !important; 
 }
 
 /*date*/
@@ -200,6 +200,7 @@ tr:hover {
 .react-datepicker__header {
   background-color: #f0f0f0;
 }
+
 /*color radius input
 input:focus, select:focus, .react-datepicker__input-container input:focus {
   border: 2px solid rgb(69, 94, 253) !important;
@@ -207,42 +208,13 @@ input:focus, select:focus, .react-datepicker__input-container input:focus {
 }
   */
 
-/* Xóa viền xanh khi chọn nhiều giá trị */
-.custom-select__multi-value {
-  background-color: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
-}
-
-/* Loại bỏ viền xanh của từng giá trị */
-.custom-select__multi-value__label {
-  box-shadow: none !important;
-  border: none !important;
-  outline: none !important;
-}
-
-/* Loại bỏ focus trên input */
-.custom-select__input-container {
-  box-shadow: none !important;
-  border: none !important;
-  outline: none !important;
-}
-
-/* Chỉnh lại focus của dropdown tổng */
-.custom-select:focus, 
-.custom-select:focus-visible {
-  outline: none !important;
-  box-shadow: none !important;
-  border: none !important;
-}
-
 .datepicker-container {
   display: flex;
   align-items: center;
-  gap: 2px; /* Khoảng cách giữa các phần tử */
-  border: 1px solid rgb(202, 202, 202); /* Tạo viền đen */
-  padding: 4px; /* Thêm khoảng cách bên trong để viền không sát nội dung */
-  border-radius: 2px; /* Bo góc nhẹ */
+  gap: 2px; 
+  border: 1px solid rgb(202, 202, 202); 
+  padding: 4px; 
+  border-radius: 2px;
   width: 200%;
   height: 41px;
   margin-top: 5px;
@@ -250,13 +222,18 @@ input:focus, select:focus, .react-datepicker__input-container input:focus {
 .datepicker-Day {
   display: flex;
   align-items: center;
-  gap: 2px; /* Khoảng cách giữa các phần tử */
-  border: 1px solid rgb(202, 202, 202); /* Tạo viền đen */
-  padding: 4px; /* Thêm khoảng cách bên trong để viền không sát nội dung */
-  border-radius: 2px; /* Bo góc nhẹ */
+  gap: 2px; 
+  padding: 4px;
+  border-radius: 2px; 
   width: 200%;
-  height: 41px;
+  height: 38px;
   margin-top: 5px;
+  font-size: 14px;
+  border: none; /* Loại bỏ viền cũ */
+  box-shadow: 0 0 0 1px rgb(202, 202, 202); /* Tạo hiệu ứng viền nằm trên */
+  position: relative; /* Đảm bảo box-shadow không bị che */
+  z-index: 10; /* Đặt viền trên các phần tử khác */
+
 }
 .datepicker-Day:focus-within {
   border-color: #798ffc !important;
@@ -268,17 +245,18 @@ input:focus, select:focus, .react-datepicker__input-container input:focus {
 .datepicker {
   width: 100% !important; 
   padding: 5px;
-  border: none !important; /* Xóa viền */
-  outline: none !important; /* Xóa viền khi focus */
+  border: none !important; 
+  outline: none !important;
   text-align: left;
 }
 
 /* Container chính để đảm bảo chia đều */
 .filter-container {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 cột bằng nhau */
-  gap: 14px;
-  align-items: center; /* Căn giữa theo chiều dọc */
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 10px;
+  align-items: center;
+ 
 }
 
 /* Wrapper cho từng input/select */
@@ -288,21 +266,6 @@ input:focus, select:focus, .react-datepicker__input-container input:focus {
   margin-left: 5px;
 }
 
-/* Định dạng cho Select */
-.custom-select {
-  width: 100% !important;
-}
-
-/* Định dạng cho Input */
-.custom-input {
-  width: 100%;
-  padding: 4px;
-  border: 1px solid #ccc;
-  border-radius: 2px;
-}
-
-
-
 /* Tổng thể phần nội dung */
 .text-lg {
 padding: auto;
@@ -311,60 +274,139 @@ margin-top: -10px;
 .content-wrapper {
   padding: 16px;
   background-color: #fff;
-  border-radius: 8px;
+  border-radius: 2px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 93%;
   margin-bottom: 20px;
 }
 
-/* Chia bảng thành 2 cột chiếm 94% */
+
 .tables-wrapper {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   width: 100%;
-  margin: -15px auto 20px;
-  height: 300px;
+  margin: -13px auto 20px;
+  height: 200px;
+  position: relative; 
 }
 
-/* Mỗi bảng chiếm 50% (chia đều) */
+
 .table-container {
-  flex: 1;
-  overflow-x: auto;
   border-radius: 2px;
   border: 1px solid #ddd;
   background-color: #fafafa;
-  padding: 8px;
+  padding:-15px;
   overflow: auto;
-  scrollbar-width: none; /* Firefox */
   font-size: 13px;
 }
-
-.table-container::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
+.table-hide {
+  width: 93%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  padding: 10px ;
+ 
 }
 
-/* Header bảng */
-.table-container thead {
-  background-color: #d1fae5;
+.table::-webkit-scrollbar {
+  display: none; 
 }
 
-/* Dòng trong bảng */
-.table-container tbody tr {
-  transition: background-color 0.2s ease-in-out;
+/* Bảng dữ liệu */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  
 }
 
-/* Hover */
-.table-container tbody tr:hover {
-  background-color: #f3f4f6;
-  cursor: pointer;
-}
-
-/* Ô bảng */
-.table-container td, .table-container th {
+th, td {
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
+
+th {
+  background-color: #e0f2e9;
+  font-weight: bold;
+}
+
+/* Hover row */
+tr:hover {
+  background-color: #f5f5f5;
+}
+
+/* Ô bảng */
+.table {
+  flex: 1;
+  overflow-x: auto;
+  background-color: white;
+  overflow: auto;
+  scrollbar-width: none; /* Firefox */
+  font-size: 13px;
+  width: 100%;
+  max-width: 100%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  border-collapse: collapse;
+}
+.table th,
+.table td {
+  padding: 8px;
+  border-bottom: 1px solid #e0e0e0;
+  border-right: 1px solid #ddd; 
+}
+/*tiêu đề table */
+.tr-table {
+  background-color: #d5fce3 !important;
+  width: 100%;
+  position: sticky; 
+  top: 0;
+
+}
+/* Màu tiêu đề table */
+.table thead tr:hover {
+  background-color: #d5fce3 !important; 
+}
+.btn-hide {
+  background: none;
+  border: none;
+  color:  #006600;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  font-size: inherit;
+  box-shadow: none;
+  font-size: 12px;
+}
+
+.btn-pagination {
+  background: none;
+  border: none;
+  color: #006600;
+  gap: 5px;
+  cursor: pointer;
+  box-shadow: none;
+  font-size: 30px;
+}
+
+/* Giới hạn chiều cao của phần cuộn */
+.overflow-y-auto {
+  max-height: 300px; /* Điều chỉnh chiều cao theo ý muốn */
+  overflow-y: auto;
+}
+
+/* Đảm bảo thanh cuộn hiển thị đúng */
+.overflow-y-auto::-webkit-scrollbar {
+  display: block; 
+  width: 5px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 5px;
+}
+
+
 
 /* Phần chi tiết */
 .details-section {
@@ -376,11 +418,26 @@ margin-top: -10px;
 }
 .button-container {
   display: flex;
-  text-align: center !important ; /* Căn giữa */
+  text-align: center !important ;
   justify-content: center !important;
-  margin-bottom: 16px; /* Khoảng cách với phần dưới */
+  margin-bottom: 16px; 
+  width: 87%;
+
 }
-.hide-button {
-  text-align: center !important ; /* Căn giữa */
-  margin-top: 12px; /* Khoảng cách với phần dưới */
+.controls  {
+  display: flex;
+  text-align: center !important ;
+  justify-content: space-between;
+  margin: 5px 0 0px;
+  padding: 3px 5px 0px;
+  background-color: #ffffff;
+}
+.pagination {
+  display: flex;
+}
+.page-info{
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  padding-top: 7px;
 }
