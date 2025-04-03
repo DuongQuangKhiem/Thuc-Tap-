@@ -279,7 +279,13 @@ margin-top: -10px;
   width: 93%;
   margin-bottom: 20px;
 }
-
+.pending-tasks-summary{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  padding-bottom: 5px;
+}
 
 .tables-wrapper {
   display: flex;

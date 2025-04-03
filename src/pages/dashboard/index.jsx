@@ -20,7 +20,7 @@ export default function DashBoard() {
   const [endDate, setEndDate] = useState(null);
   const [position, setPosition] = useState(null);
   const [workplace, setWorkplace] = useState(null);
- 
+  const [selectedRow, setSelectedRow] = useState(null);
 
   const CustomOption = (props) => {
     return (
@@ -138,7 +138,7 @@ export default function DashBoard() {
     { value: "999 cờ đỏ", label: "999 Cờ Đỏ" }
   ];
  
-  const [selectedRow, setSelectedRow] = useState(null);
+  
   const details = {
     1: ["Nguyễn Văn A - 20", "Trần Thị B - 15"],
     2: ["Phạm Văn C - 10"],
@@ -301,7 +301,10 @@ export default function DashBoard() {
       <Card>
       <CardContent>
   <div className="content-wrapper">
+  <div className="pending-tasks-summary" >
     <h3 className="text-lg mb-4">Số lượng chờ xử lý theo bộ phận/nghiệp vụ</h3>
+    <h3 className="text-lg mb-4">Tổng: </h3>
+    </div>
     <div className="tables-wrapper">
       {/* Bảng bộ phận */}
       <div className="table">
