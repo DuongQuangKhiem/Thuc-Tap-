@@ -358,9 +358,24 @@ tr:hover {
 .table th,
 .table td {
   padding: 8px;
-  border-bottom: 1px solid #e0e0e0;
-  border-right: 1px solid #ddd; 
+  border-bottom: 1px solid #f1f1f1;
 }
+.text-center {
+  font-weight: bold;
+}
+.text-center-sl {
+  text-align: center;
+  font-weight: bold;
+}
+.text-center-count{
+  text-align: center;
+  font-size: 10px;
+  width: 100px;
+}
+.text-tbody {
+  font-size: 10px;
+}
+
 /*tiêu đề table */
 .tr-table {
   background-color: #d5fce3 !important;
@@ -369,6 +384,38 @@ tr:hover {
   top: 0;
 
 }
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 280px;
+  height: 27px;
+ 
+}
+
+.user-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover; 
+  border: 2px solid #ccc; 
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-weight: bold;
+  font-size: 10px;
+}
+
+.user-meta {
+  font-size: 9px;
+  
+}
+
 /* Màu tiêu đề table */
 .table thead tr:hover {
   background-color: #d5fce3 !important; 

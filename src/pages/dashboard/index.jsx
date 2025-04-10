@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from 'react';
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import Card from "@/components/ui/Card";
@@ -13,6 +13,7 @@ import "./dashboard.css";
 
 
 
+
 export default function DashBoard() {
   const [department, setDepartment] = useState(null);
   const [job, setJob] = useState(null);
@@ -20,7 +21,6 @@ export default function DashBoard() {
   const [endDate, setEndDate] = useState(null);
   const [position, setPosition] = useState(null);
   const [workplace, setWorkplace] = useState(null);
-  const [selectedRow, setSelectedRow] = useState(null);
 
   const CustomOption = (props) => {
     return (
@@ -82,68 +82,13 @@ export default function DashBoard() {
       whiteSpace: "nowrap",
     }),
   };
-  
-  
-  
-  const departmentOptions = [
-    { value: "KAIZEN", label: "KAIZEN" },
-    { value: "LOGISTICS", label: "LOGISTICS" },
-    { value: "SUPPLY CHAIN", label: "SUPPLY CHAIN" },
-    { value: "ADM", label: "ADM" },
-    { value: "F&A", label: "F&A" },
-    { value: "BOD", label: "BOD" },
-    { value: "CLINIC", label: "CLINIC" },
-    { value: "TECH", label: "TECH" }
-  ];
-  
-  
-  
-  
-  const jobOptions = [
-    { value: "CSKH", label: "CSKH" },
-    { value: "Cosmetic", label: "Cosmetic" },
-    { value: "Đào tạo", label: "Đào tạo" },
-    { value: "Quản lý cửa hàng", label: "Quản lý cửa hàng" },
-    { value: "Bảo vệ", label: "Bảo vệ" },
-    { value: "Đóng gói", label: "Đóng gói" },
-    { value: "Tư vấn Clinic", label: "Tư vấn Clinic" },
-    { value: "BOM", label: "BOM" },
-    { value: "Giao hàng nhanh", label: "Giao hàng nhanh" }
-  ];
-  const data = [
-    { id: 1, department: "LOGISTICS", count: 3177, service: "Giao hàng nhanh" },
-    { id: 2, department: "TECH", count: 9, service: "CSKH Cosmetic" },
-    { id: 3, department: "SPA", count: 3, service: "Bác sĩ" },
-    { id: 4, department: "SPA", count: 1, service: "CSKH Spa" },
-    { id: 5, department: "LOGISTICS", count: 3177, service: "Giao hàng nhanh" },
-    { id: 6, department: "TECH", count: 9, service: "CSKH Cosmetic" },
-    { id: 7, department: "SPA", count: 3, service: "Bác sĩ" },
-    { id: 8, department: "SPA", count: 1, service: "CSKH Spa" }
-  ];
-  const positionOptions = [
-    { value: "Specialist", label: "Specialist" },
-    { value: "Assistant Supervisor", label: "Assistant Supervisor" },
-    { value: "Sub Leader", label: "Sub Leader" },
-    { value: "Supervisor", label: "Supervisor" },
-    { value: "Assistant Manager", label: "Assistant Manager" },
-    { value: "Director", label: "Director" },
-    { value: "Doctor", label: "Doctor" },
-    { value: "Manager", label: "Manager" }
-  ];
+
   const workplaceOptions = [
-    { value: "123 an khánh", label: "123 An Khánh" },
-    { value: "234 bình thủy", label: "234 Bình Thủy" },
-    { value: "456 cái răng", label: "456 Cái Răng" },
-    { value: "789 thốt nốt", label: "789 Thốt Nốt" },
-    { value: "999 cờ đỏ", label: "999 Cờ Đỏ" }
+    
   ];
  
-  
   const details = {
-    1: ["Nguyễn Văn A - 20", "Trần Thị B - 15"],
-    2: ["Phạm Văn C - 10"],
-    3: ["Lê Thị D - 5"],
-    4: ["Hoàng Văn E - 2"],
+    
   };
   const DateRangePicker = ({ startDate, endDate, setStartDate, setEndDate }) => {
     return (
@@ -173,16 +118,97 @@ export default function DashBoard() {
       </div>
     );
   };
-  const employees = [
-    { id: 1, name: "Nguyễn Thị Luyện", department: "COSMETICS", location: "176 Phan Đăng Lưu", count: 27 },
-    { id: 2, name: "Mai Yến Nhi", department: "COSMETICS", location: "447 Phan Văn Trị", count: 22 },
-    { id: 3, name: "BOD Test 1", department: "BOD", location: "", count: 15 },
-    { id: 4, name: "Nguyễn Văn Tính", department: "COSMETICS", location: "555 3 tháng 2", count: 10 },
-    { id: 5, name: "Nguyễn Thị Luyện", department: "COSMETICS", location: "176 Phan Đăng Lưu", count: 27 },
-    { id: 6, name: "Mai Yến Nhi", department: "COSMETICS", location: "447 Phan Văn Trị", count: 22 },
-    { id: 7, name: "BOD Test 1", department: "BOD", location: "", count: 15 },
-    { id: 8, name: "Nguyễn Văn Tính", department: "COSMETICS", location: "555 3 tháng 2", count: 10 },
-];
+ 
+const [data, setData] = useState([]);
+const [metaData, setMetaData] = useState({});
+
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const [resV2, resV1] = await Promise.all([
+        fetch('https://apitestchat.hasaki.vn/api/v1/user/getPendingMentionOfEmployeeV2', {
+          method: 'GET',
+          headers: {
+            'accept': 'application/json, text/plain, */*',
+            'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXJ0bmVyX2lkIjoxLCJwYXJ0bmVyX3VzZXJfaWQiOiI2IiwibWFqb3JfaWQiOjE0MiwibmFtZSI6IsSQaW5oIEjDsmEgSGnhu4dwIiwiaWF0IjoxNzQ0MjcxNDM2fQ.OhPNolInHY3AgI8_S4xqszs4T1ifRJKw8vB2XyC-TYs',
+          },
+        }).then(res => res.json()),
+
+        fetch('https://apitestchat.hasaki.vn/api/v1/user/getPendingMentionOfEmployee', {
+          method: 'GET',
+          headers: {
+            'accept': 'application/json, text/plain, */*',
+            'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXJ0bmVyX2lkIjoxLCJwYXJ0bmVyX3VzZXJfaWQiOiI2IiwibWFqb3JfaWQiOjE0MiwibmFtZSI6IsSQaW5oIEjDsmEgSGnhu4dwIiwiaWF0IjoxNzQ0MjcxNDM2fQ.OhPNolInHY3AgI8_S4xqszs4T1ifRJKw8vB2XyC-TYs',
+          },
+        }).then(res => res.json()),
+      ]);
+
+      console.log('Employee list (V2):', resV2);
+      console.log('Meta data (V1):', resV1);
+
+      setData(resV2?.data?.list || []);
+      setMetaData(resV1?.data?.metaData || {});
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  fetchData();
+}, []);
+
+//bộ phận
+const departmentCount = data.reduce((acc, item) => {
+  const department = item.partner_user_department || 'Chưa xác định';
+  acc[department] = (acc[department] || 0) + 1;
+  return acc;
+}, {});
+//option bộ phận
+const departmentOptions = metaData?.department_summerize?.map(dept => ({
+  label: dept.name,
+  value: dept.id, // hoặc bạn có thể dùng dept.name làm value nếu muốn
+}));
+
+//nghiệp vụ
+const majorCount = data.reduce((acc, item) => {
+  const major = item.partner_user_major || 'Chưa xác định';
+  acc[major] = (acc[major] || 0) + 1;
+  return acc;
+}, {});
+
+ //option nghiep vu
+ const jobOptions = metaData?.major_summerize?.map(major => ({
+  label: major.name,
+  value: major.id, // hoặc major.name nếu bạn thích
+}));
+
+//vi tri
+const positionSet = new Set(
+  data.map(item => item.partner_user_position || 'Chưa xác định')
+);
+
+//option vi tri
+const positionOptions = Array.from(positionSet).map(position => ({
+  label: position,
+  value: position,
+}));
+
+//group nv
+const userCount = data.reduce((acc, item) => {
+  const id = item.partner_user_id;
+  if (!acc[id]) {
+    acc[id] = {
+      name: item.partner_user_name,
+      major: item.partner_user_major,
+      department: item.partner_user_department, // hoặc field khác nếu bạn có địa chỉ
+      avatar: item.avatar_url || '', // avatar_url là giả sử, bạn đổi đúng field nếu có
+      count: 0,
+    };
+  }
+  acc[id].count += 1;
+  return acc;
+}, {});
+
   return (
     <section className="p-6 text-white">
       <div className="form-container w-full h-full p-4">
@@ -214,9 +240,7 @@ export default function DashBoard() {
     placeholderText="Từ ngày"
     className="datepicker border"
   />
-  
   <span>→</span>
-
   <DatePicker
     selected={endDate}
     onChange={(date) => setEndDate(date)}
@@ -229,7 +253,6 @@ export default function DashBoard() {
     className="datepicker border"
   />
 </div>
-
   </div>
 
   <div className="filter-container grid grid-cols-4 gap-4">
@@ -245,21 +268,20 @@ export default function DashBoard() {
   components={{ Option: CustomOption }}
   styles={customStyles}
 />
-
   </div>
 
   <div className="filter-item">
   <Select
-  className="w-full custom-select"
+  className="w-full"
   options={jobOptions}
   value={job}
   onChange={setJob}
   placeholder="Nghiệp vụ"
   isMulti
   closeMenuOnSelect={false}
+  components={{ Option: CustomOption }}
   styles={customStyles}
 />
-
   </div>
 
   <div className="filter-item">
@@ -273,7 +295,6 @@ export default function DashBoard() {
   closeMenuOnSelect={false}
   styles={customStyles}
 />
-
 </div>
 
 <div className="filter-item">
@@ -287,14 +308,9 @@ export default function DashBoard() {
   closeMenuOnSelect={false}
   styles={customStyles}
 />
-
-
-
 </div>
 </div>
-
 </div>
-
         </div>
       </div>
 
@@ -303,83 +319,79 @@ export default function DashBoard() {
   <div className="content-wrapper">
   <div className="pending-tasks-summary" >
     <h3 className="text-lg mb-4">Số lượng chờ xử lý theo bộ phận/nghiệp vụ</h3>
-    <h3 className="text-lg mb-4">Tổng: </h3>
+    <h3 className="text-lg mb-4">Tổng: {data.total_cxl}</h3>
     </div>
+    
     <div className="tables-wrapper">
-      {/* Bảng bộ phận */}
-      <div className="table">
-        <Table>
-          <TableHead  className=" tr-table">
-            <TableRow >
-              <TableCell>Bộ phận</TableCell>
-              <TableCell>Số lượng</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.map((row) => (
-              <TableRow
-                key={row.id}
-                className="cursor-pointer hover:bg-gray-100"
-                onClick={() => setSelectedRow(selectedRow === row.id ? null : row.id)}
-              >
-                <TableCell>{row.department}</TableCell>
-                <TableCell>{row.count}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-
       <div className="table">
       <Table>
-  <TableHead>
-    <TableRow className="tr-table">
-      <TableCell>Nghiệp vụ</TableCell>
-      <TableCell>Số lượng</TableCell>
+  <TableHead className="tr-table">
+    <TableRow>
+      <TableCell className="text-center">Bộ phận</TableCell>
+      <TableCell className="text-center-sl">Số lượng</TableCell>
     </TableRow>
   </TableHead>
-  <TableBody>
-    {data.map((row) => (
-      <TableRow
-        key={row.id}
-        onClick={() => setSelectedRow(selectedRow === row.id ? null : row.id)}
-      >
-        <TableCell>{row.service}</TableCell>
-        <TableCell>{row.count}</TableCell>
+  <TableBody className="text-tbody">
+    {metaData?.department_summerize?.map((dept, index) => (
+      <TableRow key={index}>
+        <TableCell>{dept.name}</TableCell>
+        <TableCell className="text-center-count">{dept.count}</TableCell>
       </TableRow>
     ))}
   </TableBody>
 </Table>
-
       </div>
+
       <div className="table">
       <Table>
   <TableHead>
     <TableRow className="tr-table">
-      <TableCell>Nhân viên</TableCell>
-      <TableCell>Số lượng</TableCell>
+      <TableCell className="text-center" >Nghiệp vụ</TableCell>
+      <TableCell className="text-center-sl">Số lượng</TableCell>
+    </TableRow>
+  </TableHead>
+  <TableBody className="text-tbody">
+    {metaData?.major_summerize?.map((major, index) => (
+      <TableRow key={index}>
+        <TableCell>{major.name}</TableCell>
+        <TableCell className="text-center-count">{major.count}</TableCell>
+      </TableRow>
+    ))}
+  </TableBody>
+</Table>
+      </div>
+
+      <div className="table">
+      <Table>
+  <TableHead>
+    <TableRow className="tr-table">
+      <TableCell className="text-center">Nhân viên</TableCell>
+      <TableCell className="text-center-sl" >Số lượng</TableCell>
     </TableRow>
   </TableHead>
   <TableBody>
-    {employees.map((employee) => (
-      <TableRow
-        key={employee.id}
-        onClick={() => setSelectedRow(selectedRow === employee.id ? null : employee.id)}
-      >
-        <TableCell className="flex items-center gap-2">
-        <img
-            src="logo1.png"
-            alt="Logo"
-            className="w-6 h-6 rounded-full object-cover" // Kích thước n
-          />
-          <span>{employee.name} - {employee.department} - {employee.location}</span>
+    {metaData?.user_summerize?.map((user, index) => (
+      <TableRow key={index}>
+        <TableCell>
+          <div className="user-info">
+            <img 
+              className="user-avatar" 
+              src={user.avatar} 
+              alt={user.name} 
+            />
+            <div className="user-details">
+              <div className="user-name"><b>{user.name}</b></div>
+              <div className="user-meta">
+                {user.infomation_short}
+              </div>
+            </div>
+          </div>
         </TableCell>
-        <TableCell>{employee.count}</TableCell>
+        <TableCell className="text-center-count">{user.count}</TableCell>
       </TableRow>
     ))}
   </TableBody>
 </Table>
-
 </div>
     </div>
   </div>
