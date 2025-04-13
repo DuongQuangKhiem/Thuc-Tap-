@@ -84,8 +84,8 @@ input, select {
   width: 450px;
 }
 .input-wrapper input {
-  height: 38px; /* Điều chỉnh chiều cao */
-  font-size: 15px; /* Điều chỉnh kích thước chữ */
+  height: 38px; 
+  font-size: 15px;
 }
 .input-wrapper input:focus {
   border-color: #798ffc !important;
@@ -226,13 +226,13 @@ input:focus, select:focus, .react-datepicker__input-container input:focus {
   padding: 4px;
   border-radius: 2px; 
   width: 200%;
-  height: 38px;
-  margin-top: 5px;
+  height: 37px;
+  margin-top: 11px;
   font-size: 14px;
-  border: none; /* Loại bỏ viền cũ */
-  box-shadow: 0 0 0 1px rgb(202, 202, 202); /* Tạo hiệu ứng viền nằm trên */
-  position: relative; /* Đảm bảo box-shadow không bị che */
-  z-index: 10; /* Đặt viền trên các phần tử khác */
+  border: none; 
+  box-shadow: 0 0 0 1px rgb(202, 202, 202); 
+  position: relative; 
+  z-index: 10; 
 
 }
 .datepicker-Day:focus-within {
@@ -347,7 +347,7 @@ tr:hover {
   overflow-x: auto;
   background-color: white;
   overflow: auto;
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none; 
   font-size: 13px;
   width: 100%;
   max-width: 100%;
@@ -444,7 +444,7 @@ tr:hover {
 
 /* Giới hạn chiều cao của phần cuộn */
 .overflow-y-auto {
-  max-height: 300px; /* Điều chỉnh chiều cao theo ý muốn */
+  max-height: 300px; 
   overflow-y: auto;
 }
 
