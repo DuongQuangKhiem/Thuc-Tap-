@@ -8,10 +8,10 @@ const DetailTable = ({ data, filters, onClose }) => {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [data, filters]); // Reset page nếu bộ lọc hoặc data thay đổi
+  }, [data, filters]); 
 
   const filteredData = useMemo(() => {
-    if (!filters?.isSearchClicked) return data; // Nếu chưa search thì return nguyên data
+    if (!filters?.isSearchClicked) return data;
 
     return data.filter(item => {
       const itemDate = item.time ? new Date(item.time) : null;
@@ -83,9 +83,6 @@ const DetailTable = ({ data, filters, onClose }) => {
       </div>
 
       <div className="controls">
-       
-
-        {/* Nút Ẩn chi tiết */}
         <button 
           className="btn-hide mt-4" 
           onClick={onClose}

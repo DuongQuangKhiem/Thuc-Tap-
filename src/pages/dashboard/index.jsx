@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import Card from "@/components/ui/Card";
 import CardContent from "@/components/ui/CardContent";
 import { Table, TableHead, TableRow, TableCell, TableBody } from "@/components/ui/table";
-import { Search, RefreshCcw } from "lucide-react";
+import { Search, RefreshCcw, RotateCcw } from "lucide-react";
 import Select, { components } from "react-select";
 import DatePicker from "react-datepicker";
 import { ChartColumn } from 'lucide-react';
@@ -13,16 +13,12 @@ import DetailTable from "./DetailTable";
 import "./dashboard.css";
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import {ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend} from 'recharts';
+import {ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, Pie, PieChart} from 'recharts';
 
 export default function DashBoard() {
-  const [department, setDepartment] = useState([]);
-  const [job, setJob] = useState([]);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [position, setPosition] = useState([]);
-  const [workplace, setWorkplace] = useState([]);
   const [showDetailTable, setShowDetailTable] = useState(false);
+ 
+
 
   const CustomOption = (props) => {
     return (
@@ -122,13 +118,23 @@ export default function DashBoard() {
       </div>
     );
   };
- 
+
 const [data, setData] = useState([]);
 const [metaData, setMetaData] = useState({});
 const [filters, setFilters] = useState([]);
 const [receivers, setReceivers] = useState([]);
 const [senders, setSenders] = useState([]);
 const [showChart, setShowChart] = useState(false);
+const [summarizedUsers, setSummarizedUsers] = useState(metaData?.user_summerize || []);
+const totalFilteredCXL = summarizedUsers.reduce((sum, user) => sum + (user.count || 0), 0);
+const popupRef = useRef(null);
+const [chartType, setChartType] = useState('pie'); 
+const [departmentData, setDepartmentData] = useState({});
+const [majorData, setMajorData] = useState({});
+const [combinedChartData, setCombinedChartData] = useState([]);
+const [pieChartData, setPieChartData] = useState([]);
+
+
 
 useEffect(() => {
   const fetchData = async () => {
@@ -247,7 +253,7 @@ const userCount = data.reduce((acc, item) => {
   acc[id].count += 1;
   return acc;
 }, {});
-
+//oke phan lọc nhan vien
 // loc du lieu
 const [filtersState, setFiltersState] = useState({
   department: [],
@@ -270,10 +276,8 @@ const handleFilterChange = (key, value) => {
   }));
 };
 const [summarizedDepartment, setSummarizedDepartment] = useState({});
-const [hasFiltered, setHasFiltered] = useState(false); // ✅ đánh dấu đã lọc
+const [hasFiltered, setHasFiltered] = useState(false);
 const [summarizedMajor, setSummarizedMajor] = useState({});
-const departmentData = summarizedDepartment || {};
-const majorData = summarizedMajor || {};
 
 
 // lọc dữ liệu 
@@ -287,8 +291,9 @@ const handleApplyFilters = () => {
     !filtersState.workplace.length &&
     !filtersState.startDate &&
     !filtersState.endDate;
+
   if (isNoFilterApplied) {
-    //không lọc reset về data gốc
+    // Không lọc: reset về dữ liệu gốc
     setFilteredData(data || []);
 
     const deptSummary = {};
@@ -304,9 +309,35 @@ const handleApplyFilters = () => {
 
     setSummarizedDepartment(deptSummary);
     setSummarizedMajor(majorSummary);
+    setSummarizedUsers(metaData?.user_summerize || []);
     setHasFiltered(false);
+
+    // Cập nhật dữ liệu biểu đồ
+    const allKeys = Array.from(new Set([...Object.keys(deptSummary), ...Object.keys(majorSummary)]));
+    const combinedData = allKeys.map(name => ({
+      name,
+      department: deptSummary[name] || 0,
+      major: majorSummary[name] || 0,
+    }));
+    const pieData = [
+      {
+        name: 'Bộ phận',
+        value: Object.values(deptSummary).reduce((acc, val) => acc + val, 0),
+        fill: '#8884d8',
+      },
+      {
+        name: 'Nghiệp vụ',
+        value: Object.values(majorSummary).reduce((acc, val) => acc + val, 0),
+        fill: '#82ca9d',
+      },
+    ];
+
+    setCombinedChartData(combinedData);
+    setPieChartData(pieData);
     return;
   }
+
+  // Có áp dụng lọc
   const newFilteredData = (Array.isArray(data) ? data : []).filter(item => {
     const itemDate = item.time ? new Date(item.time) : null;
 
@@ -330,7 +361,7 @@ const handleApplyFilters = () => {
 
   setFilteredData(newFilteredData);
 
-  // Tổng hợp theo bộ phận
+  // Tổng hợp theo bộ phận & nghiệp vụ
   const departmentSummary = {};
   const majorSummary = {};
 
@@ -345,7 +376,81 @@ const handleApplyFilters = () => {
   setSummarizedDepartment(departmentSummary);
   setSummarizedMajor(majorSummary);
   setHasFiltered(true);
+
+  // Cập nhật dữ liệu biểu đồ sau lọc
+  const allKeys = Array.from(new Set([...Object.keys(departmentSummary), ...Object.keys(majorSummary)]));
+  const combinedData = allKeys.map(name => ({
+    name,
+    department: departmentSummary[name] || 0,
+    major: majorSummary[name] || 0,
+  }));
+
+  const pieData = [
+    {
+      name: 'Bộ phận',
+      value: Object.values(departmentSummary).reduce((acc, val) => acc + val, 0),
+      fill: '#8884d8',
+    },
+    {
+      name: 'Nghiệp vụ',
+      value: Object.values(majorSummary).reduce((acc, val) => acc + val, 0),
+      fill: '#82ca9d',
+    },
+  ];
+
+  setCombinedChartData(combinedData);
+  setPieChartData(pieData);
+
+  // Tổng hợp bảng nhân viên
+  const userSummary = {};
+  const userMetaMap = {};
+  (metaData?.user_summerize || []).forEach(user => {
+    if (user.partner_user_id) {
+      userMetaMap[user.partner_user_id] = user;
+    }
+  });
+
+  newFilteredData.forEach(item => {
+    const id = item.partner_user_id || 'unknown';
+
+    if (!userSummary[id]) {
+      const userMeta = userMetaMap[id] || {};
+      userSummary[id] = {
+        name: userMeta.name || item.partner_user_name || 'Chưa xác định',
+        count: 0,
+        avatar: userMeta.avatar || '',
+        infomation_short: userMeta.infomation_short || '',
+        partner_id: userMeta.partner_id,
+        partner_user_id: userMeta.partner_user_id,
+      };
+    }
+
+    userSummary[id].count += 1;
+  });
+
+ // Lọc theo nơi làm việc nếu có chọn workplace filter
+// Hàm chuẩn hóa chuỗi tiếng Việt bỏ dấu và lowercase
+const selectedWorkplaces = filtersState.workplace.map(opt => opt.label);
+
+// Hàm chuẩn hóa chuỗi tiếng Việt, viết thường, bỏ dấu
+const normalize = str =>
+  str?.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() || "";
+
+// Lọc nhân viên theo địa chỉ trong infomation_short
+const summarizedUsers = Object.values(userSummary).filter(user => {
+  if (!selectedWorkplaces.length) return true;
+
+  const infoShort = normalize(user.infomation_short);
+  return selectedWorkplaces.some(loc => infoShort.includes(normalize(loc)));
+});
+
+console.log("summarizedUsers:", summarizedUsers);
+setSummarizedUsers(summarizedUsers);
+
+
+
 };
+
 
 
 // Nếu muốn load lại dữ liệu khi data thay đổi
@@ -395,8 +500,35 @@ const isFiltered =
     setSummarizedDepartment(deptSummary);
     setSummarizedMajor(majorSummary);
     setHasFiltered(false); 
-  };
+    const allKeys = Array.from(new Set([
+      ...Object.keys(deptSummary),
+      ...Object.keys(majorSummary),
+    ]));
   
+    const combinedData = allKeys.map(name => ({
+      name,
+      department: deptSummary[name] || 0,
+      major: majorSummary[name] || 0,
+    }));
+  
+    const pieData = [
+      {
+        name: 'Bộ phận',
+        value: Object.values(deptSummary).reduce((acc, val) => acc + val, 0),
+        fill: '#8884d8',
+      },
+      {
+        name: 'Nghiệp vụ',
+        value: Object.values(majorSummary).reduce((acc, val) => acc + val, 0),
+        fill: '#82ca9d',
+      },
+    ];
+  
+    setDepartmentData(deptSummary);
+    setMajorData(majorSummary);
+    setCombinedChartData(combinedData);
+    setPieChartData(pieData);
+  };
   //xuat excel
   const handleExportExcel = () => {
     if (!filteredData.length) {
@@ -412,7 +544,7 @@ const isFiltered =
       "Bộ phận": item.partner_user_department || 'Chưa xác định',
       "Nghiệp vụ": item.partner_user_major || 'Chưa xác định',
       "Vị trí": item.partner_user_position || 'Chưa xác định',
-      "Địa điểm": item.location || 'Chưa xác định',
+      "Nội dung": item.parsed_text || 'Chưa xác định',
       "Thời gian": item.time ? new Date(item.time).toLocaleString() : '',
     }));
   
@@ -428,34 +560,217 @@ const isFiltered =
 
   const allKeys = Array.from(new Set([
     ...Object.keys(departmentData),
-    ...Object.keys(majorData)
+    ...Object.keys(majorData),
   ]));
-  //chart
-  const combinedChartData = allKeys.map(name => ({
-    name,
-    department: departmentData[name] || 0,
-    major: majorData[name] || 0,
-  }));
+  
+
+
+
+  useEffect(() => {
+    if (!isFiltered && metaData?.user_summerize?.length) {
+      setSummarizedUsers(metaData.user_summerize);
+    }
+  }, [metaData?.user_summerize, isFiltered]);
+  
+  //vung trong an chart
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (popupRef.current && !popupRef.current.contains(event.target)) {
+        setShowChart(false);
+      }
+    };
+  
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+  
+  useEffect(() => {
+    if (!metaData) return;
+  
+    const deptData = {};
+    const majorData = {};
+  
+    (metaData.department_summerize || []).forEach(item => {
+      deptData[item.name || 'Chưa xác định'] = item.count;
+    });
+  
+    (metaData.major_summerize || []).forEach(item => {
+      majorData[item.name || 'Chưa xác định'] = item.count;
+    });
+  
+    const allKeys = Array.from(new Set([
+      ...Object.keys(deptData),
+      ...Object.keys(majorData),
+    ]));
+  
+    const combinedData = allKeys.map(name => ({
+      name,
+      department: deptData[name] || 0,
+      major: majorData[name] || 0,
+    }));
+  
+    const pieData = [
+      {
+        name: 'Bộ phận',
+        value: Object.values(deptData).reduce((acc, val) => acc + val, 0),
+        fill: '#8884d8',
+      },
+      {
+        name: 'Nghiệp vụ',
+        value: Object.values(majorData).reduce((acc, val) => acc + val, 0),
+        fill: '#82ca9d',
+      },
+    ];
+  
+    setDepartmentData(deptData);
+    setMajorData(majorData);
+    setCombinedChartData(combinedData);
+    setPieChartData(pieData);
+  }, [metaData]);
+  
+ // Thêm useState để trigger apply filter tự động
+ const shouldApplyRef = useRef(false);
+ 
+ // Hàm xử lý click vào dòng bộ phận
+ const handleSelectDepartment = (selectedDept) => {
+   const selectedOption = departmentOptions.find(opt => opt.label === selectedDept);
+   if (selectedOption) {
+     console.log("Selected department:", selectedDept, selectedOption);
+     shouldApplyRef.current = true;
+     setFiltersState(prev => ({
+       ...prev,
+       department: [selectedOption],
+     }));
+   }
+ };
+ 
+
+// Hàm xử lý click vào dòng nghiệp vụ
+const handleSelectMajor = (selectedMajor) => {
+  const selectedOption = jobOptions.find(opt => opt.label === selectedMajor);
+  if (selectedOption) {
+    console.log("Selected major:", selectedMajor, selectedOption);
+    shouldApplyRef.current = true;
+    setFiltersState(prev => ({
+      ...prev,
+      job: [selectedOption],
+    }));
+  }
+};
+
+
+
+// Hàm xử lý click vào dòng nhân viên
+const handleSelectUser = (selectedUserId) => {
+  const selectedUser = summarizedUsers.find(user => user.partner_user_id === selectedUserId);
+  if (selectedUser) {
+    console.log("Selected user:", selectedUserId, selectedUser);
+    shouldApplyRef.current = true;
+    setFiltersState(prev => ({
+      ...prev,
+      receivers: [{ label: selectedUser.name, value: selectedUser.name }],
+    }));
+  }
+};
+
+
+// Auto apply filter sau khi filtersState thay đổi
+useEffect(() => {
+  if (shouldApplyRef.current) {
+    console.log("Auto applying filters after table row click...");
+    handleApplyFilters();
+    shouldApplyRef.current = false;
+  }
+}, [filtersState]);
+  
   return (
     <section className="p-6 text-white">
       <div className="form-container w-full h-full p-4">
         <div className="grid-container grid-cols-6 gap-4 items-center mb-4 w-full">
-          <div className="col-span-2 flex w-full">
-            <div className="button-group flex gap-2 w-full">
-            <button className="btn-search btn"  onClick={handleApplyFilters}><Search size={14} /></button>
+        <div className="col-span-2 flex w-full">
+  <div className="button-group flex gap-2 w-full">
+    <button className="btn-search btn" onClick={handleApplyFilters}>
+      <Search size={14} />
+    </button>
 
-             <button className="btn-ref btn" onClick={handleResetFilters}>
-  <RefreshCcw size={14} />
+    <button className="btn-ref btn" onClick={handleResetFilters}>
+    <RotateCcw size={14} />
+    </button>
+
+    <button className="btn-excel btn" onClick={handleExportExcel}>
+      Xuất Excel
+    </button>
+
+    {/* Nút biểu đồ + popup */}
+    <div style={{ position: 'relative' }}>
+      <button className="btn-ref btn" onClick={() => setShowChart(!showChart)}>
+      <ChartColumn size={16} />
+      </button>
+
+      {showChart && (
+        <div
+        ref={popupRef}
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            transform: 'translateX(-450px)',
+            marginTop: '8px',
+            width: '500px',
+            height: '250px',
+            backgroundColor: 'white',
+            boxShadow: '0 8px 16px rgba(0,0,0,0.15)',
+            borderRadius: '8px',
+            padding: '12px',
+            zIndex: 9999,
+            display: 'flex',
+            gap: '12px',
+            alignItems: 'center',
+          }}
+        >
+          {/* Biểu đồ tròn */}
+          {chartType === 'pie' ? (
+    <PieChart width={500} height={200}>
+      <Pie
+        data={pieChartData}
+        dataKey="value"
+        nameKey="name"
+        cx="50%"
+        cy="50%"
+        outerRadius={80}
+        label
+      />
+      <Tooltip />
+      <Legend />
+    </PieChart>
+  ) : (
+    <BarChart width={400} height={220} data={combinedChartData}>
+      <XAxis dataKey="name" />
+      <YAxis />
+      <Tooltip />
+      <Legend />
+      <Bar dataKey="department" fill="#8884d8" name="Bộ phận" />
+      <Bar dataKey="major" fill="#82ca9d" name="Nghiệp vụ" />
+    </BarChart>
+  )}
+   <button
+  className="btn-ref btn"
+  onClick={() => setChartType(chartType === 'pie' ? 'bar' : 'pie')}
+  style={{ marginTop: '-200px' ,marginLeft: '35px' }}
+>
+  <RefreshCcw size={12} />
 </button>
 
-<button className="btn-excel btn" onClick={handleExportExcel}>
-  Xuất Excel
-</button>
-<button className="btn-ref btn" onClick={() => setShowChart(!showChart)}>
-  {showChart ? "Ẩn" : <ChartColumn size={16} />}
-</button>
-            </div>
-          </div>
+        </div>
+      )}
+    </div>
+  </div>
+</div>
+
+
+       
 
           <div className="grid-rows-2 grid gap-4">
   <div className="grid grid-cols-4 gap-3">
@@ -559,16 +874,17 @@ const isFiltered =
 
 <div className="filter-item">
 <Select
-    className="w-full custom-select"
-    options={locationOptions}
-    value={filtersState.workplace}
-    onChange={(selected) => handleFilterChange('workplace', selected)}
-    placeholder="Nơi làm việc"
-    isMulti
-    closeMenuOnSelect={false}
-    styles={customStyles}
-    components={{ Option: CustomOption }}
-  />
+  className="w-full custom-select"
+  options={locationOptions}
+  value={filtersState.workplace}
+  onChange={(selected) => handleFilterChange('workplace', selected)}
+  placeholder="Nơi làm việc"
+  isMulti
+  closeMenuOnSelect={false}
+  styles={customStyles}
+  components={{ Option: CustomOption }}
+/>
+
 </div>
 </div>
 </div>
@@ -581,8 +897,11 @@ const isFiltered =
   <div className="pending-tasks-summary" >
     <h3 className="text-lg mb-4">Số lượng chờ xử lý theo bộ phận/nghiệp vụ</h3>
     <h3 className="text-lg mb-4">
-  Tổng: {metaData?.total_cxl?.toLocaleString() ?? 0}
+  Tổng: {isFiltered
+    ? totalFilteredCXL.toLocaleString()
+    : (metaData?.total_cxl?.toLocaleString() ?? 0)}
 </h3>
+
     </div>
     
     <div className="tables-wrapper">
@@ -597,19 +916,28 @@ const isFiltered =
   <TableBody className="text-tbody">
     {hasFiltered
       ? Object.entries(summarizedDepartment).map(([name, count], index) => (
-          <TableRow key={index}>
+          <TableRow
+            key={index}
+            className="cursor-pointer hover:bg-gray-200"
+            onClick={() => handleSelectDepartment(name)}
+          >
             <TableCell>{name}</TableCell>
             <TableCell className="text-center-count">{count}</TableCell>
           </TableRow>
         ))
       : metaData?.department_summerize?.map((dept, index) => (
-          <TableRow key={index}>
+          <TableRow
+            key={index}
+            className="cursor-pointer hover:bg-gray-200"
+            onClick={() => handleSelectDepartment(dept.name)}
+          >
             <TableCell>{dept.name}</TableCell>
             <TableCell className="text-center-count">{dept.count}</TableCell>
           </TableRow>
         ))}
   </TableBody>
 </Table>
+
       </div>
 
       <div className="table">
@@ -623,13 +951,21 @@ const isFiltered =
   <TableBody className="text-tbody">
     {(hasFiltered
       ? Object.entries(summarizedMajor).map(([name, count], index) => (
-          <TableRow key={index}>
+          <TableRow
+            key={index}
+            className="cursor-pointer hover:bg-gray-200"
+            onClick={() => handleSelectMajor(name)}
+          >
             <TableCell>{name}</TableCell>
             <TableCell className="text-center-count">{count}</TableCell>
           </TableRow>
         ))
       : metaData?.major_summerize?.map((major, index) => (
-          <TableRow key={index}>
+          <TableRow
+            key={index}
+            className="cursor-pointer hover:bg-gray-200"
+            onClick={() => handleSelectMajor(major.name)}
+          >
             <TableCell>{major.name}</TableCell>
             <TableCell className="text-center-count">{major.count}</TableCell>
           </TableRow>
@@ -637,6 +973,7 @@ const isFiltered =
     )}
   </TableBody>
 </Table>
+
       </div>
 
       <div className="table">
@@ -648,27 +985,33 @@ const isFiltered =
     </TableRow>
   </TableHead>
   <TableBody>
-    {metaData?.user_summerize?.map((user, index) => (
-      <TableRow key={index}>
-        <TableCell>
-          <div className="user-info">
-            <img 
-              className="user-avatar" 
-              src={user.avatar} 
-              alt={user.name} 
-            />
-            <div className="user-details">
-              <div className="user-name"><b>{user.name}</b></div>
-              <div className="user-meta">
-                {user.infomation_short}
-              </div>
+  {summarizedUsers.map((user, index) => (
+    <TableRow
+  key={index}
+  className="cursor-pointer hover:bg-gray-200"
+  onClick={() => handleSelectUser(user.partner_user_id)}
+>
+      <TableCell>
+        <div className="user-info">
+          <img 
+            className="user-avatar" 
+            src={user.avatar} 
+            alt={user.name} 
+          />
+          <div className="user-details">
+            <div className="user-name"><b>{user.name}</b></div>
+            <div className="user-meta">
+              {user.infomation_short}
             </div>
           </div>
-        </TableCell>
-        <TableCell className="text-center-count">{user.count}</TableCell>
-      </TableRow>
-    ))}
-  </TableBody>
+        </div>
+      </TableCell>
+      <TableCell className="text-center-count">{user.count}</TableCell>
+    </TableRow>
+  ))}
+</TableBody>
+
+
 </Table>
 </div>
     </div>
@@ -692,20 +1035,6 @@ const isFiltered =
     onClose={() => setShowDetailTable(false)} 
   />
 )}
-<div style={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}>
-  {showChart && (
-    <ResponsiveContainer width={600} height={350}>
-      <BarChart data={combinedChartData}>
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="department" fill="#8884d8" name="Bộ phận" />
-        <Bar dataKey="major" fill="#82ca9d" name="Nghiệp vụ" />
-      </BarChart>
-    </ResponsiveContainer>
-  )}
-</div>
 
     </section>   
   );
